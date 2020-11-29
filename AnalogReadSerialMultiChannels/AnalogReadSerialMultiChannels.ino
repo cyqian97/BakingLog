@@ -18,17 +18,16 @@ void setup() {
 
 // the loop routine runs over and over again forever:
 void loop() {
-  // read the input on analog pin 0:
-  int sensorValue = analogRead(A0);
-  Serial.print(sensorValue);
-  Serial.print("\t");
-  
-  sensorValue = analogRead(A1);
-  Serial.print(sensorValue);
-  Serial.print("\t");
-  
-  sensorValue = analogRead(A2);
-  Serial.println(sensorValue);
-  
-  delay(1000);      // delay in between reads for stability
+  char inByte = ' ';
+  int sensorValue = 0;
+  if(Serial.available()){ // only send data back if data has been sent
+    char inByte = Serial.read(); // read the incoming data
+    for (int i = 0; i < int(inByte); i = i + 1) {
+      sensorValue = analogRead(i);
+      Serial.print(sensorValue);
+      Serial.print("\t");
+    }
+    Serial.println("");
+  }
+  delay(200);      // delay in between reads for stability
 }
