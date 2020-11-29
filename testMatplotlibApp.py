@@ -7,13 +7,15 @@ from PyQt5 import QtCore, QtWidgets
 
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
+import matplotlib.pyplot as plt
 
 
 class MplCanvas(FigureCanvas):
 
     def __init__(self, parent=None, width=5, height=4, dpi=100):
-        fig = Figure(figsize=(width, height), dpi=dpi)
-        self.axes = fig.add_subplot(111)
+        with plt.style.context("dark_background"):
+            fig = Figure(figsize=(width, height), dpi=dpi)
+            self.axes = fig.add_subplot(111)
         super(MplCanvas, self).__init__(fig)
 
 class MainWindow(QtWidgets.QMainWindow):
@@ -26,7 +28,8 @@ class MainWindow(QtWidgets.QMainWindow):
 
         n_data = 50
         self.xdata = list(range(n_data))
-        self.ydata = [random.randint(0, 10) for i in range(n_data)]
+        self.ydata1 = [random.randint(0, 10) for i in range(n_data)]
+        self.ydata2 = [random.randint(0, 10) for i in range(n_data)]
         self.update_plot()
 
         self.show()
@@ -39,9 +42,11 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def update_plot(self):
         # Drop off the first y element, append a new one.
-        self.ydata = self.ydata + [random.randint(0, 10)]
+        self.ydata1 = self.ydata1 + [random.randint(0, 10)]
+        self.ydata2 = self.ydata2 + [random.randint(0, 10)]
         self.canvas.axes.cla()  # Clear the canvas.
-        self.canvas.axes.plot(self.ydata, 'r')
+        self.canvas.axes.plot(self.ydata1)
+        self.canvas.axes.plot(self.ydata2)
         # Trigger the canvas to update and redraw.
         self.canvas.draw()
 

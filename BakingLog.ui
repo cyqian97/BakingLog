@@ -213,6 +213,9 @@
    <property name="text">
     <string>Channel 1</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+F1</string>
+   </property>
   </action>
   <action name="actionChannel_2">
    <property name="checkable">
@@ -223,6 +226,9 @@
    </property>
    <property name="text">
     <string>Channel 2</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F2</string>
    </property>
   </action>
   <action name="actionChannel_3">
@@ -235,6 +241,9 @@
    <property name="text">
     <string>Channel 3</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+F3</string>
+   </property>
   </action>
   <action name="actionChannel_4">
    <property name="checkable">
@@ -245,6 +254,9 @@
    </property>
    <property name="text">
     <string>Channel 4</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F4</string>
    </property>
   </action>
   <action name="actionChannel_5">
@@ -267,6 +279,9 @@
    </property>
    <property name="text">
     <string>Channel 6</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+F6</string>
    </property>
   </action>
  </widget>

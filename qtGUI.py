@@ -184,11 +184,16 @@ class Ui_MainWindow(object):
         self.actionSave_data.setText(_translate("MainWindow", "Save data"))
         self.actionSave_data.setShortcut(_translate("MainWindow", "Ctrl+S"))
         self.actionChannel_1.setText(_translate("MainWindow", "Channel 1"))
+        self.actionChannel_1.setShortcut(_translate("MainWindow", "Ctrl+F1"))
         self.actionChannel_2.setText(_translate("MainWindow", "Channel 2"))
+        self.actionChannel_2.setShortcut(_translate("MainWindow", "Ctrl+F2"))
         self.actionChannel_3.setText(_translate("MainWindow", "Channel 3"))
+        self.actionChannel_3.setShortcut(_translate("MainWindow", "Ctrl+F3"))
         self.actionChannel_4.setText(_translate("MainWindow", "Channel 4"))
+        self.actionChannel_4.setShortcut(_translate("MainWindow", "Ctrl+F4"))
         self.actionChannel_5.setText(_translate("MainWindow", "Channel 5"))
         self.actionChannel_6.setText(_translate("MainWindow", "Channel 6"))
+        self.actionChannel_6.setShortcut(_translate("MainWindow", "Ctrl+F6"))
 
 
 if __name__ == "__main__":
