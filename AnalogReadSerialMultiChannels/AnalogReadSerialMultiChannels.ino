@@ -14,6 +14,7 @@
 void setup() {
   // initialize serial communication at 9600 bits per second:
   Serial.begin(9600);
+  analogReadResolution(12);
   int sensorValue = 0;
   int channelNum = 6;
   for (int i = 0; i < channelNum; i = i + 1) {

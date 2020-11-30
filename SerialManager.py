@@ -6,7 +6,7 @@ class SerialManager(QtCore.QObject):
 
     def __init__(self, check_fn, parent=None):
         super().__init__(parent)
-        self.serial_port = QtSerialPort.QSerialPort("COM3")
+        self.serial_port = QtSerialPort.QSerialPort("COM15")
         self.serial_port.setBaudRate(QtSerialPort.QSerialPort.Baud9600)
         self.serial_port.errorOccurred.connect(self.handle_error)
         self.serial_port.readyRead.connect(self.handle_ready_read)

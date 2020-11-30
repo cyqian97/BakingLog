@@ -13,9 +13,8 @@ import matplotlib.pyplot as plt
 class MplCanvas(FigureCanvas):
 
     def __init__(self, parent=None, width=5, height=4, dpi=100):
-        with plt.style.context("dark_background"):
-            fig = Figure(figsize=(width, height), dpi=dpi)
-            self.axes = fig.add_subplot(111)
+        fig = Figure(figsize=(width, height), dpi=dpi)
+        self.axes = fig.add_subplot(111)
         super(MplCanvas, self).__init__(fig)
 
 class MainWindow(QtWidgets.QMainWindow):
