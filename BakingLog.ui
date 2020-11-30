@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>886</width>
+    <width>1045</width>
     <height>600</height>
    </rect>
   </property>
@@ -28,6 +28,12 @@
            <string>Time Scale:</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_5">
+           <property name="leftMargin">
+            <number>2</number>
+           </property>
+           <property name="rightMargin">
+            <number>2</number>
+           </property>
            <item row="0" column="0">
             <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1,0,0">
              <item>
@@ -38,7 +44,14 @@
               </widget>
              </item>
              <item>
-              <widget class="QSpinBox" name="spinBoxTimeScale"/>
+              <widget class="QSpinBox" name="spinBoxTimeScale">
+               <property name="maximum">
+                <number>99999999</number>
+               </property>
+               <property name="value">
+                <number>7200</number>
+               </property>
+              </widget>
              </item>
              <item>
               <widget class="QLabel" name="labelTimeAll">
@@ -65,6 +78,12 @@
            <string>Temperature Scale</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_4">
+           <property name="leftMargin">
+            <number>2</number>
+           </property>
+           <property name="rightMargin">
+            <number>2</number>
+           </property>
            <item row="0" column="0">
             <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="0,1,0,1,0,0">
              <item>
@@ -99,6 +118,9 @@
                <property name="text">
                 <string/>
                </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
               </widget>
              </item>
             </layout>
@@ -112,6 +134,12 @@
            <string>Pressure Scale</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
+           <property name="leftMargin">
+            <number>2</number>
+           </property>
+           <property name="rightMargin">
+            <number>2</number>
+           </property>
            <item row="0" column="0">
             <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,1,0,1,0,0">
              <item>
@@ -146,6 +174,9 @@
                <property name="text">
                 <string/>
                </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
               </widget>
              </item>
             </layout>
@@ -164,7 +195,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>886</width>
+     <width>1045</width>
      <height>26</height>
     </rect>
    </property>
@@ -172,6 +203,8 @@
     <property name="title">
      <string>File</string>
     </property>
+    <addaction name="actionStart"/>
+    <addaction name="actionRefresh"/>
     <addaction name="actionSave_data"/>
    </widget>
    <widget class="QMenu" name="menuChannels">
@@ -197,7 +230,7 @@
     <string>Ctrl+S</string>
    </property>
    <property name="shortcutContext">
-    <enum>Qt::ApplicationShortcut</enum>
+    <enum>Qt::WindowShortcut</enum>
    </property>
    <property name="shortcutVisibleInContextMenu">
     <bool>true</bool>
@@ -269,6 +302,9 @@
    <property name="text">
     <string>Channel 5</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+F5</string>
+   </property>
   </action>
   <action name="actionChannel_6">
    <property name="checkable">
@@ -282,6 +318,28 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+F6</string>
+   </property>
+  </action>
+  <action name="actionStart">
+   <property name="text">
+    <string>Start</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Space</string>
+   </property>
+   <property name="shortcutVisibleInContextMenu">
+    <bool>true</bool>
+   </property>
+  </action>
+  <action name="actionRefresh">
+   <property name="text">
+    <string>Refresh</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
+   </property>
+   <property name="shortcutVisibleInContextMenu">
+    <bool>true</bool>
    </property>
   </action>
  </widget>

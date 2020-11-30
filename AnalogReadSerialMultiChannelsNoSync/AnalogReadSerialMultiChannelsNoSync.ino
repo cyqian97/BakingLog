@@ -14,21 +14,20 @@
 void setup() {
   // initialize serial communication at 9600 bits per second:
   Serial.begin(9600);
+  Serial.println("ready");
 }
 
 // the loop routine runs over and over again forever:
 void loop() {
-  // read the input on analog pin 0:
-  int sensorValue = analogRead(A0);
-  Serial.print(sensorValue);
-  Serial.print("\t");
+  int sensorValue = 0;
+  int channelNum = 6;
   
-  sensorValue = analogRead(A1);
-  Serial.print(sensorValue);
-  Serial.print("\t");
-  
-  sensorValue = analogRead(A2);
-  Serial.println(sensorValue);
-  
+  for (int i = 0; i < channelNum; i = i + 1) {
+    sensorValue = analogRead(i);
+    Serial.print(sensorValue);
+    Serial.print("\t");
+  }
+  Serial.println("");
+
   delay(1000);      // delay in between reads for stability
 }
