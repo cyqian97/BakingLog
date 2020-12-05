@@ -1,14 +1,13 @@
 import os
 import sys
 import time
-import serial
-import random
+import shutil
 import qdarkstyle
 from qtGUI import Ui_MainWindow
 import matplotlib.pyplot as plt
-from ThermocoupleFit import k_tpye_fit
+from ThermocoupleFit import k_type_fit
 from matplotlib.figure import Figure
-from SerialManager import SerialManager
+from SerialManager import SerialManagerArduino, SerialManagerCombine
 from PyQt5 import QtCore, QtGui, QtWidgets
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
@@ -35,6 +34,7 @@ class BakingLogGui(Ui_MainWindow):
 
         # Initialize data array
         self.channelData = [[[], []] for _ in range(self.channelNum)]
+        self.pressureData = [[],[]]
 
         # Read channel switches from file
         self.channelSwitches = self.read_channel_switches()
@@ -68,11 +68,11 @@ class BakingLogGui(Ui_MainWindow):
 
         # Create an empty file
         with open(self.dataFileName,"w") as f:
-            f.write('time\tT1\tT2\tT3\tT4\tT5\tT6\n')
+            f.write('time\tT1\tT2\tT3\tT4\tT5\tT6\tP\n')
 
         self.actionSave_data.triggered.connect(self.save_file)
 
-        self.f = k_tpye_fit()
+        self.f = k_type_fit()
 
     # Read channel switches from file
     def read_channel_switches(self):
@@ -122,6 +122,9 @@ class BakingLogGui(Ui_MainWindow):
             else:
                 s += "-1"
             s += '\t'
+        # self.pressureData[0] += [t]
+        # self.pressureData[1] += v[-1]
+        # s += str(v[-1])
         s += '\n'
         with open(self.dataFileName, "a") as f:
             f.write(s)
@@ -139,11 +142,20 @@ class BakingLogGui(Ui_MainWindow):
             self.canvasT.axes.set_xlabel("time (s)")
             self.canvasT.axes.set_ylabel("Temperature ($^\circ$C)")
             self.canvasT.draw()
+            # self.canvasP.axes.cla()
+            # self.canvasP.axes.plot(self.pressureData[0],self.pressureData[1])
+            # self.canvasP.axes.set_xlabel("time (s)")
+            # self.canvasP.axes.set_ylabel("Pressure (Torr)")
+            # self.canvasP.draw()
 
     def save_file(self):
-        print("a")
-        name = QtGui.QFileDialog.getSaveFileName(self.mainwindow, 'Save File', os.path.join(os.getcwd(), "1.txt"),"Text (*.txt)")[0]
-        print(name)
+        options = QtWidgets.QFileDialog.Options()
+        options |= QtWidgets.QFileDialog.DontUseNativeDialog
+        name, _ = QtWidgets.QFileDialog.getSaveFileName(self.mainwindow,"QFileDialog.getSaveFileName()","","Text Files (*.txt)", options=options)
+        if name[-4:].lower() is not '.txt':
+            name += ".txt"
+        shutil.copyfile(os.path.join(os.getcwd(),self.dataFileName),name)
+
 
 
 if __name__ == "__main__":
@@ -152,7 +164,7 @@ if __name__ == "__main__":
     MainWindow = QtWidgets.QMainWindow()
     ui = BakingLogGui(MainWindow)
     MainWindow.show()
-    manager = SerialManager(ui.check_logging_status)
+    manager = SerialManagerArduino(ui.check_logging_status)
     manager.valueChanged.connect(ui.get_arduino)
     manager.update.connect(ui.update_plot)
     app.exec_()
