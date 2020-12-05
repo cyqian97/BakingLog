@@ -151,10 +151,11 @@ class BakingLogGui(Ui_MainWindow):
     def save_file(self):
         options = QtWidgets.QFileDialog.Options()
         options |= QtWidgets.QFileDialog.DontUseNativeDialog
-        name, _ = QtWidgets.QFileDialog.getSaveFileName(self.mainwindow,"QFileDialog.getSaveFileName()","","Text Files (*.txt)", options=options)
-        if name[-4:].lower() is not '.txt':
+        name, _ = QtWidgets.QFileDialog.getSaveFileName(self.mainwindow, "Save data", "", "Text Files (*.txt)",
+                                                        options=options)
+        if name[-4:].lower() != '.txt':
             name += ".txt"
-        shutil.copyfile(os.path.join(os.getcwd(),self.dataFileName),name)
+        shutil.copyfile(os.path.join(os.getcwd(), self.dataFileName), name)
 
 
 
