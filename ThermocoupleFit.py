@@ -11,7 +11,7 @@ def k_type_fit():
         lines = f.readlines()
     for l in lines:
         l = l.strip().split('\t')
-        volt += [(float(v0) * gain ) / 1000 / 3.3 * 2 ** 12 for v in l[1:-1:1]]
+        volt += [(float(v) * gain ) / 1000 / 3.3 * 2 ** 12 for v in l[1:-1:1]]
     temp = np.arange(volt.__len__())
     f = interpolate.interp1d(volt, temp, bounds_error=False, fill_value="extrapolate")
     return f
