@@ -28,6 +28,8 @@ class BakingLogGui(Ui_MainWindow):
 
         # Parameters
         self.channelNum = 6  # Maximum available channels in this app
+        self.maxVoltage = 3.3 # (V) arduino due analog reading maximum
+        self.bitdepth = 12 # arduino due analog read bit depth
         self.t0 = 0  # To store the start time
         self.isLogging = False
         self.dataFileName = "data.txt"
@@ -69,12 +71,15 @@ class BakingLogGui(Ui_MainWindow):
         self.actionStart.triggered.connect(self.start_logging)
 
         # Create an empty file
-        with open(self.dataFileName,"w") as f:
+        with open(self.dataFileName, "w") as f:
             f.write('time\tT1\tT2\tT3\tT4\tT5\tT6\tP\n')
 
         self.actionSave_data.triggered.connect(self.save_file)
 
+        # Thermocouple
         self.f = k_type_fit()
+        self.gain = [64.38, 64.28, 64.33, 64.33, 64.33, 64.33]
+        self.offest = [-69.42, -82.99, -76, -76, -76, -76]
 
     # Read channel switches from file
     def read_channel_switches(self):
@@ -94,6 +99,7 @@ class BakingLogGui(Ui_MainWindow):
             else:
                 self.channelSwitches[i] = 0
             self.write_channel_switches(self.channelSwitches)
+
         return toggled_signal
 
     def start_logging(self):
@@ -113,14 +119,16 @@ class BakingLogGui(Ui_MainWindow):
 
     # Todo: communicate with arduino, also save data in default name
     def get_arduino(self, v):
-        T = self.f(v)
+        v = v / self.maxVoltage * 2 ** self.bitdepth # convert from arduino result to real voltage (V)
+        # T = self.f(v)
         t = time.time() - self.t0
         s = str(t) + '\t'
         for i in range(self.channelNum):
             if self.channelSwitches[i] > 0:
                 self.channelData[i][0] += [t]
-                self.channelData[i][1] += [T[i]]
-                s += str(T[i])
+                T = self.f((v[i]-self.offest[i])/self.gain[i]) # convert to the voltage before the amplifier
+                self.channelData[i][1] += [T]
+                s += str(T)
             else:
                 s += "-1"
             s += '\t'
@@ -141,14 +149,15 @@ class BakingLogGui(Ui_MainWindow):
             self.canvasT.axes.cla()
             for i in range(self.channelNum):
                 if self.channelSwitches[i] > 0:
-                    self.canvasT.axes.plot(self.channelData[i][0], self.channelData[i][1], label="channel " + str(i+1))
+                    self.canvasT.axes.plot(self.channelData[i][0], self.channelData[i][1],
+                                           label="channel " + str(i + 1))
             # Trigger the canvas to update and redraw.
             self.canvasT.axes.legend()
             self.canvasT.axes.set_xlabel("time (s)")
             self.canvasT.axes.set_ylabel("Temperature ($^\circ$C)")
             self.canvasT.draw()
             self.canvasP.axes.cla()
-            self.canvasP.axes.plot(self.pressureData[0],self.pressureData[1])
+            self.canvasP.axes.plot(self.pressureData[0], self.pressureData[1])
             self.canvasP.axes.set_xlabel("time (s)")
             self.canvasP.axes.set_ylabel("Pressure (Torr)")
             self.canvasP.draw()
@@ -161,7 +170,6 @@ class BakingLogGui(Ui_MainWindow):
         if name[-4:].lower() != '.txt':
             name += ".txt"
         shutil.copyfile(os.path.join(os.getcwd(), self.dataFileName), name)
-
 
 
 if __name__ == "__main__":
