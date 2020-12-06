@@ -35,7 +35,6 @@ class SerialManagerArduino(QtCore.QObject):
                 self.serial_port_agilent.write('#0002UHFIG1\r'.encode())
                 try:
                     p = [float(codec.toUnicode(self.serial_port_agilent.readAll())[1:])]
-                    print(p)
                 except ValueError as e:
                     p = [False]
                 value += p

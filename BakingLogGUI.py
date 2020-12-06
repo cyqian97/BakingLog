@@ -34,7 +34,7 @@ class BakingLogGui(Ui_MainWindow):
 
         # Initialize data array
         self.channelData = [[[], []] for _ in range(self.channelNum)]
-        self.pressureData = [[],[]]
+        self.pressureData = [[], []]
 
         # Read channel switches from file
         self.channelSwitches = self.read_channel_switches()
@@ -61,6 +61,8 @@ class BakingLogGui(Ui_MainWindow):
         self.canvasT.axes.set_xlabel("time (s)")
         self.canvasT.axes.set_ylabel("Temperature ($^\circ$C)")
         self.canvasP = MplCanvas(self, width=5, height=4, dpi=100)
+        self.canvasP.axes.set_xlabel("time (s)")
+        self.canvasP.axes.set_ylabel("Pressure (Torr)")
         self.horizontalLayoutPlot.addWidget(self.canvasT)
         self.horizontalLayoutPlot.addWidget(self.canvasP)
 
@@ -122,9 +124,12 @@ class BakingLogGui(Ui_MainWindow):
             else:
                 s += "-1"
             s += '\t'
-        # self.pressureData[0] += [t]
-        # self.pressureData[1] += v[-1]
-        # s += str(v[-1])
+        if v[-1]:
+            self.pressureData[0] += [t]
+            self.pressureData[1] += [v[-1]]
+            s += str(v[-1])
+        else:
+            s += "-1"
         s += '\n'
         with open(self.dataFileName, "a") as f:
             f.write(s)
@@ -142,11 +147,11 @@ class BakingLogGui(Ui_MainWindow):
             self.canvasT.axes.set_xlabel("time (s)")
             self.canvasT.axes.set_ylabel("Temperature ($^\circ$C)")
             self.canvasT.draw()
-            # self.canvasP.axes.cla()
-            # self.canvasP.axes.plot(self.pressureData[0],self.pressureData[1])
-            # self.canvasP.axes.set_xlabel("time (s)")
-            # self.canvasP.axes.set_ylabel("Pressure (Torr)")
-            # self.canvasP.draw()
+            self.canvasP.axes.cla()
+            self.canvasP.axes.plot(self.pressureData[0],self.pressureData[1])
+            self.canvasP.axes.set_xlabel("time (s)")
+            self.canvasP.axes.set_ylabel("Pressure (Torr)")
+            self.canvasP.draw()
 
     def save_file(self):
         options = QtWidgets.QFileDialog.Options()
