@@ -4,6 +4,7 @@ import time
 
 class SerialManagerArduino(QtCore.QObject):
     valueChanged = QtCore.pyqtSignal(list)
+    valueChanged = QtCore.pyqtSignal(list)
     update = QtCore.pyqtSignal()
 
     def __init__(self, check_fn, parent=None):
@@ -13,6 +14,13 @@ class SerialManagerArduino(QtCore.QObject):
         self.serial_port.errorOccurred.connect(self.handle_error)
         self.serial_port.readyRead.connect(self.handle_ready_read)
         self.serial_port.open(QtCore.QIODevice.ReadWrite)
+
+        self.serial_port_agilent = QtSerialPort.QSerialPort("COM8")
+        self.serial_port_agilent.setBaudRate(QtSerialPort.QSerialPort.Baud9600)
+        self.serial_port_agilent.errorOccurred.connect(self.handle_error)
+        self.serial_port_agilent.readyRead.connect(self.handle_ready_read)
+        self.serial_port_agilent.open(QtCore.QIODevice.ReadWrite)
+
         self.check = check_fn
 
     def handle_ready_read(self):
@@ -21,8 +29,16 @@ class SerialManagerArduino(QtCore.QObject):
             codec = QtCore.QTextCodec.codecForName("UTF-8")
             line = codec.toUnicode(self.serial_port.readLine()).strip().strip("\x00")
             line = line.split("\t")
+
             try:
                 value = [float(t) for t in line]
+                self.serial_port_agilent.write('#0002UHFIG1\r'.encode())
+                try:
+                    p = [float(codec.toUnicode(self.serial_port_agilent.readAll())[1:])]
+                    print(p)
+                except ValueError as e:
+                    p = [False]
+                value += p
             except ValueError as e:
                 print("error", e)
             else:
@@ -95,7 +111,7 @@ class SerialManagerAgilent(QtCore.QObject):
 
     def __init__(self, check_fn, parent=None):
         super().__init__(parent)
-        self.serial_port_agilent = QtSerialPort.QSerialPort("COM4")
+        self.serial_port_agilent = QtSerialPort.QSerialPort("COM8")
         self.serial_port_agilent.setBaudRate(QtSerialPort.QSerialPort.Baud9600)
         self.serial_port_agilent.errorOccurred.connect(self.handle_error)
         self.serial_port_agilent.readyRead.connect(self.handle_ready_read)
