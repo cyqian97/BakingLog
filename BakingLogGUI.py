@@ -28,8 +28,8 @@ class BakingLogGui(Ui_MainWindow):
 
         # Parameters
         self.channelNum = 6  # Maximum available channels in this app
-        self.maxVoltage = 3.3 # (V) arduino due analog reading maximum
-        self.bitdepth = 12 # arduino due analog read bit depth
+        self.maxVoltage = 3.3  # (V) arduino due analog reading maximum
+        self.bitdepth = 12  # arduino due analog read bit depth
         self.t0 = 0  # To store the start time
         self.isLogging = False
         self.dataFileName = "data.txt"
@@ -69,6 +69,7 @@ class BakingLogGui(Ui_MainWindow):
         self.horizontalLayoutPlot.addWidget(self.canvasP)
 
         self.actionStart.triggered.connect(self.start_logging)
+        self.actionRefresh.triggered.connect(self.refresh)
 
         # Create an empty file
         with open(self.dataFileName, "w") as f:
@@ -78,8 +79,8 @@ class BakingLogGui(Ui_MainWindow):
 
         # Thermocouple
         self.f = k_type_fit()
-        self.gain = [64.38, 64.28, 64.33, 64.33, 64.33, 64.33]
-        self.offest = [-69.42, -82.99, -76, -76, -76, -76]
+        self.gain = [6.46159613e+01, 64.85970839, 64.33, 64.33, 64.33, 64.33]
+        self.offset = [-6.32907620e-02, -0.0699907, -0.076, -0.076, -0.076, -0.076]
 
     # Read channel switches from file
     def read_channel_switches(self):
@@ -117,16 +118,28 @@ class BakingLogGui(Ui_MainWindow):
         self.actionStart.setText("Start")
         self.actionStart.triggered.connect(self.start_logging)
 
-    # Todo: communicate with arduino, also save data in default name
+    def refresh(self):
+        self.channelData = [[[], []] for _ in range(self.channelNum)]
+        self.pressureData = [[], []]
+        if self.check_logging_status():
+            self.t0 = time.time()
+        else:
+            self.t0 = 0
+        self.update_plot()
+        with open(self.dataFileName, "w") as f:
+            f.write('time\tT1\tT2\tT3\tT4\tT5\tT6\tP\n')
+
     def get_arduino(self, v):
-        v = v / self.maxVoltage * 2 ** self.bitdepth # convert from arduino result to real voltage (V)
+        v = [vv / 2 ** self.bitdepth * self.maxVoltage for vv in v[:-1]] + [
+            v[-1]]  # convert from arduino result to real voltage (V)
+        # print((v[1] - self.offset[1]) / self.gain[1])
         # T = self.f(v)
         t = time.time() - self.t0
         s = str(t) + '\t'
         for i in range(self.channelNum):
             if self.channelSwitches[i] > 0:
                 self.channelData[i][0] += [t]
-                T = self.f((v[i]-self.offest[i])/self.gain[i]) # convert to the voltage before the amplifier
+                T = self.f((v[i] - self.offset[i]) / self.gain[i])  # convert to the voltage before the amplifier
                 self.channelData[i][1] += [T]
                 s += str(T)
             else:
@@ -150,14 +163,16 @@ class BakingLogGui(Ui_MainWindow):
             for i in range(self.channelNum):
                 if self.channelSwitches[i] > 0:
                     self.canvasT.axes.plot(self.channelData[i][0], self.channelData[i][1],
-                                           label="channel " + str(i + 1))
+                                           label="ch" + str(i + 1) + ": " + "%.1f" % (self.channelData[i][1][-1]) + "C")
             # Trigger the canvas to update and redraw.
             self.canvasT.axes.legend()
             self.canvasT.axes.set_xlabel("time (s)")
             self.canvasT.axes.set_ylabel("Temperature ($^\circ$C)")
             self.canvasT.draw()
             self.canvasP.axes.cla()
-            self.canvasP.axes.plot(self.pressureData[0], self.pressureData[1])
+            self.canvasP.axes.plot(self.pressureData[0], self.pressureData[1],
+                                   label="P:" + "%.3e Torr" % self.pressureData[1][-1])
+            self.canvasP.axes.legend()
             self.canvasP.axes.set_xlabel("time (s)")
             self.canvasP.axes.set_ylabel("Pressure (Torr)")
             self.canvasP.draw()

@@ -27,7 +27,10 @@ class SerialManagerArduino(QtCore.QObject):
         while self.serial_port.canReadLine():
             # self.serial_port.write(b'1')
             codec = QtCore.QTextCodec.codecForName("UTF-8")
-            line = codec.toUnicode(self.serial_port.readLine()).strip().strip("\x00")
+            line = self.serial_port.readLine()
+            print(line)
+            line = codec.toUnicode(line).strip().strip("\x00")
+
             line = line.split("\t")
 
             try:
