@@ -170,12 +170,12 @@ class BakingLogGui(Ui_MainWindow):
             self.canvasT.axes.set_ylabel("Temperature ($^\circ$C)")
             self.canvasT.draw()
             self.canvasP.axes.cla()
-            self.canvasP.axes.plot(self.pressureData[0], self.pressureData[1],
-                                   label="P:" + "%.3e Torr" % self.pressureData[1][-1])
-            self.canvasP.axes.legend()
-            self.canvasP.axes.set_xlabel("time (s)")
-            self.canvasP.axes.set_ylabel("Pressure (Torr)")
-            self.canvasP.draw()
+            # self.canvasP.axes.plot(self.pressureData[0], self.pressureData[1],
+            #                        label="P:" + "%.3e Torr" % self.pressureData[1][-1])
+            # self.canvasP.axes.legend()
+            # self.canvasP.axes.set_xlabel("time (s)")
+            # self.canvasP.axes.set_ylabel("Pressure (Torr)")
+            # self.canvasP.draw()
 
     def save_file(self):
         options = QtWidgets.QFileDialog.Options()
