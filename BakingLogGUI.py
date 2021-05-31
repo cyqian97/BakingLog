@@ -20,36 +20,6 @@ class MplCanvas(FigureCanvas):
             self.axes = fig.add_subplot(111, yscale=y_scale)
         super(MplCanvas, self).__init__(fig)
 
-# Mouse scrolling for axes
-# def zoom_zoom(axes, base_scale=1.2):
-#     def on_scroll(event):
-#         if event.inaxes != axes:
-#             return
-#         if event.button == 'up':
-#             scale = 1/base_scale
-#         else:
-#             scale = base_scale
-#
-#         mouse_y = event.ydata
-#         initial_ylim = axes.get_ylim()
-#
-#         new_height = (initial_ylim[1] - initial_ylim[0]) * scale
-#
-#         rely = (initial_ylim[1] - mouse_y) / (initial_ylim[1] - initial_ylim[0])
-#
-#         axes.set_ylim(mouse_y - new_height * (1 - rely), mouse_y + new_height * rely)
-#
-#         # print()
-#         # print(axes.get_ylim())
-#         # print()
-#
-#         # axes.get_figure().draw(axes.get_figure().canvas.renderer)
-#         # plt.show()
-#
-#     fig = axes.get_figure()
-#     fig.canvas.mpl_connect('scroll_event', on_scroll)
-#     return on_scroll
-
 
 class BakingLogGui(Ui_MainWindow):
     def __init__(self, mainwindow):
@@ -64,10 +34,6 @@ class BakingLogGui(Ui_MainWindow):
         self.t0 = 0  # To store the start time
         self.isLogging = False
         self.dataFileName = "data.txt"
-        # curr_time = str(datetime.datetime.now())
-        # curr_time = curr_time.replace(":", ".")
-        # curr_time = curr_time.replace(".", "-")
-        # self.dataFileName = "data_" + curr_time + "_.txt"
 
         # Initialize data array
         self.channelData = [[[], []] for _ in range(self.channelNum)]
@@ -113,25 +79,8 @@ class BakingLogGui(Ui_MainWindow):
         layoutP.addWidget(toolbarP)
         layoutP.addWidget(self.canvasP)
 
-        # self.horizontalLayoutPlot.addWidget(layoutT)
-        # self.horizontalLayoutPlot.addWidget(layoutP)
-
         self.horizontalLayoutPlot.addLayout(layoutT)
         self.horizontalLayoutPlot.addLayout(layoutP)
-
-        # self.horizontalLayoutPlot.addWidget(self.canvasT)
-        # self.horizontalLayoutPlot.addWidget(toolbarT)
-        # self.horizontalLayoutPlot.addWidget(self.canvasP)
-        # self.horizontalLayoutPlot.addWidget(toolbarP)
-
-        # Implement a graph zooming function
-        # zoom_T = zoom_zoom(self.canvasT.axes)
-        # zoom_P = zoom_zoom(self.canvasP.axes)
-
-        # self.first_update = True
-
-        # print(isinstance(self.canvasP.axes.set_ylim(), tuple))
-
 
         self.actionStart.triggered.connect(self.start_logging)
         self.actionRefresh.triggered.connect(self.refresh)
@@ -229,14 +178,7 @@ class BakingLogGui(Ui_MainWindow):
     def update_plot(self):
         # Clear the canvas.
         with plt.style.context("dark_background"):
-            # Clear axes and save the y axis limits
-            # init_ylim_T = self.canvasT.axes.get_ylim()
             self.canvasT.axes.cla()
-
-            # This stuff deals with setting the right zoom
-            # if not self.first_update:
-            #     self.canvasT.axes.set_ylim(init_ylim_T[0], init_ylim_T[1])
-            # self.first_update = False
 
             for i in range(self.channelNum):
                 if self.channelSwitches[i] > 0 and len(self.channelData[i][1]) > 0:
